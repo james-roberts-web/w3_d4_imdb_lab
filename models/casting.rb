@@ -9,7 +9,7 @@ class Casting
       @id = casting['id'].to_i if casting['id']
       @movie_id = casting['movie_id'].to_i
       @star_id = casting['star_id'].to_i
-      @fee = casting['fee']
+      @fee = casting['fee'].to_i
   end
 
   def save

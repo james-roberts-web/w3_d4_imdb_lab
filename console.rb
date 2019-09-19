@@ -4,10 +4,10 @@ require_relative('models/casting')
 
 require('pry')
 
-movie1 = Movie.new({'title' => 'Lord of The Rings', 'genre' => 'Fantasy'})
+movie1 = Movie.new({'title' => 'Lord of The Rings', 'genre' => 'Fantasy', 'budget' => 2000000})
 movie1.save
 
-movie2 = Movie.new({'title' => 'The Avengers', 'genre' => 'Action'})
+movie2 = Movie.new({'title' => 'The Avengers', 'genre' => 'Action', 'budget' => 1000000})
 movie2.save
 
 star1 = Star.new({'first_name' => 'Ian', 'last_name' => 'McKellan'})

@@ -3,18 +3,19 @@ require_relative ('../db/sql_runner.rb')
 class Movie
 
   attr_reader :id
-  attr_accessor :title, :genre
+  attr_accessor :title, :genre, :budget
 
   def initialize(movie)
       @id = movie['id'].to_i if movie['id']
       @title = movie['title']
       @genre = movie['genre']
+      @budget = movie['budget']
   end
 
   def save
-    sql = "INSERT INTO movies (title, genre)
-    VALUES ($1, $2) RETURNING id"
-    values = [@title, @genre]
+    sql = "INSERT INTO movies (title, genre, budget)
+    VALUES ($1, $2, $3) RETURNING id"
+    values = [@title, @genre, @budget]
     movie = SqlRunner.run(sql, values).first
     @id = movie['id'].to_i
   end
@@ -33,8 +34,8 @@ class Movie
 
   def update
     sql = "UPDATE movies
-    SET title = $1, genre = $2 WHERE id = $3"
-    values = [@title, @genre, @id]
+    SET title = $1, genre = $2, budget = $3 WHERE id = $4"
+    values = [@title, @genre, @budget, @id]
     SqlRunner.run(sql, values)
   end
 
@@ -55,8 +56,21 @@ class Movie
     values = [@id]
     array = SqlRunner.run(sql, values)
     return array.map{|stars|Star.new(stars)}
+  end
 
+  def castings
+    sql = "SELECT * FROM castings
+          WHERE movie_id = $1"
+    movie_value = [@id]
+    array = SqlRunner.run(sql, movie_value)
+    return array.map{|casting|Casting.new(casting)}
+  end
 
+  def remaining
+    castings = self.castings
+    fees = castings.map{|casting|casting.fee}
+    total = fees.reduce(0){|total_fees, fee|total_fees += fee}
+    return @budget -= total
   end
 
 end
